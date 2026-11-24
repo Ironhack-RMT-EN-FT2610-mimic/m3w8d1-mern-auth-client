@@ -1,10 +1,15 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import service from "../../services/index.services";
 
 function Signup() {
+
+  const navigate = useNavigate()
 
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null)
 
   const handleEmailChange = (e) => setEmail(e.target.value);
   const handleUsernameChange = (e) => setUsername(e.target.value);
@@ -13,7 +18,29 @@ function Signup() {
   const handleSignup = async (e) => {
     e.preventDefault();
 
-    // ... contact backend to register the user
+    const body = {
+      email,
+      username, 
+      password
+    }
+
+    console.log(body)
+
+    try {
+      // ... contact backend to register the user
+      await service.post("/auth/signup", body)
+      console.log("user created in the backend")
+
+      navigate("/login")
+      
+    } catch (error) {
+      console.log(error)
+      if (error.response && error.response.status === 400) {
+        setErrorMessage(error.response.data.message)
+      } else {
+        // ... you would send the user to a generic error page here.
+      }
+    }
   };
 
   return (
@@ -54,6 +81,9 @@ function Signup() {
         <br />
 
         <button type="submit">Signup</button>
+
+        { errorMessage && <p>{errorMessage}</p> }
+
       </form>
       
     </div>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import service from '../services/index.services'
 
 function PrivatePageExample() {
 
@@ -12,6 +13,9 @@ function PrivatePageExample() {
     try {
       
       // call a private route here...
+      const response = await service.get("/users/example-user-route")
+
+      setData(response.data)
 
     } catch (error) {
       console.log(error)
@@ -25,6 +29,8 @@ function PrivatePageExample() {
       
       <h3>Private Page Example</h3>
       <p>Should only be visible for logged in users that already validated their credentials (login) and have a valid token</p>
+
+      {dataOnlyForLoggedUsers}
 
     </div>
   )
